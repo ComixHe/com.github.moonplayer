@@ -1,0 +1,47 @@
+version: "1"
+package:
+  id: com.github.moonplayer
+  name: moonplayer
+  version: 4.3.0.0
+  kind: app
+  description: |
+    Video player that can play online videos from youtube, bilibili etc.
+command: [/opt/apps/com.github.moonplayer/files/bin/moonplayer]
+base: org.deepin.base/25.2.1
+runtime: org.deepin.runtime.dtk/25.2.1
+sources:
+  - kind: git
+    url: https://github.com/coslyk/moonplayer.git
+    commit: v4.3
+buildext:
+  apt:
+    build_depends:
+      - cmake
+      - qt6-base-dev
+      - qt6-base-private-dev
+      - qt6-declarative-dev
+      - qt6-declarative-private-dev
+      - qt6-tools-dev
+      - libmpv-dev
+      - libcurl4-openssl-dev
+      - libssl-dev
+    depends:
+      - libmpv2
+      - liblapack3
+      - ffmpeg
+      - qml6-module-qt-labs-settings
+      - qml6-module-qtqml-workerscript
+      - qml6-module-qtquick
+      - qml6-module-qtquick-controls
+      - qml6-module-qtquick-dialogs
+      - qml6-module-qtquick-layouts
+      - qml6-module-qtquick-templates
+      - qml6-module-qtquick-window
+      - curl
+build: |
+  cd /project/linglong/sources/moonplayer.git
+  mkdir ${PREFIX}/etc
+  echo -e "${PREFIX}/lib/${TRIPLET}/blas\n${PREFIX}/lib/${TRIPLET}/lapack" > ${PREFIX}/etc/ld.so.conf
+  cmake -B linyaps-build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${PREFIX}
+  cmake --build linyaps-build --parallel
+  cmake --install linyaps-build
